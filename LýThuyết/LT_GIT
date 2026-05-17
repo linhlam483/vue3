@@ -1,0 +1,15 @@
+# Các Câu Lệnh Git Cơ Bản Hàng Ngày
+
+## 1. Chuỗi Lệnh Đẩy Code (Dùng Thường Xuyên)
+Sau khi hoàn thành một chức năng, sử dụng 3 lệnh sau theo thứ tự:
+- `git add .` : Gom toàn bộ các file vừa sửa vào danh sách chuẩn bị gửi.
+- `git commit -m "Mô tả code vừa làm"` : Đóng gói và ghi chú lại lịch sử làm việc.
+- `git push` : Đẩy gói code đồng bộ lên kho chứa Github.
+
+## 2. Xử Lý Cảnh Báo Phổ Biến
+- **Warning "LF will be replaced by CRLF":** 
+  Đây không phải là lỗi. Nó chỉ là thông báo Git đang tự động chuyển đổi định dạng xuống dòng giữa máy Mac (LF) và máy Windows (CRLF) để tránh lỗi font chữ. Bạn cứ tiếp tục các lệnh commit và push bình thường.
+
+## 3. Các Lệnh Khác
+- `git pull` : Kéo code mới nhất từ Github về máy tính (thường dùng khi làm việc nhóm).
+- `git status` : Kiểm tra xem có file nào đang bị sửa đổi mà chưa được lưu lại không.

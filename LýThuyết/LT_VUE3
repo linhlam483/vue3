@@ -1,0 +1,14 @@
+# Kiến Trúc Cơ Bản Của Dự Án Vue 3
+
+## 1. Cấu Trúc Thư Mục
+Một dự án Vue 3 hiện đại chia nhỏ thành các phần độc lập:
+- **`App.vue`:** Khung sườn gốc của toàn bộ ứng dụng.
+- **`router/index.js`:** Nơi cấu hình điều hướng (URL nào mở trang nào).
+- **`views/`:** Chứa các Trang chính của web (VD: `HomeView.vue`, `ProductDetailView.vue`).
+- **`components/`:** Chứa các mảnh ghép giao diện nhỏ, tái sử dụng được nhiều lần (VD: Nút bấm, Thẻ sản phẩm, Thanh điều hướng).
+- **`utils/`:** Chứa các hàm tiện ích dùng chung (VD: file cấu hình API, hàm tính toán).
+
+## 2. Quản Lý Dữ Liệu (State Management)
+Code xử lý logic được phân cấp rõ ràng:
+- **Logic nội bộ:** Xử lý trực tiếp trong thẻ `<script setup>` của từng file `.vue`.
+- **Logic toàn cục (Pinia):** Dùng cho các dữ liệu xài chung ở nhiều trang (VD: Giỏ hàng, Thông tin User). Thay vì truyền tay qua lại giữa các trang, dữ liệu được cất ở kho Pinia để mọi trang đều truy cập được.

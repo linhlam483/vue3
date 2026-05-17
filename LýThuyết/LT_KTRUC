@@ -1,0 +1,13 @@
+# Mô Hình Kiến Trúc Frontend - Backend
+
+## 1. Sự Tách Biệt
+- **Backend (Máy chủ & Cơ sở dữ liệu):** Lưu trữ dữ liệu gốc, xử lý tính toán nặng và kiểm tra bảo mật.
+- **Frontend (Vue 3 / React):** Chỉ chịu trách nhiệm hiển thị giao diện (UI) và nhận tương tác của người dùng.
+- **Giao tiếp:** Hai bên nói chuyện với nhau thông qua API. Nhờ sự tách biệt này, nếu giao diện Frontend bị lỗi sập, dữ liệu trên Backend vẫn an toàn tuyệt đối.
+
+## 2. Cơ Chế Xác Thực & Phân Quyền (Token-based Auth)
+Quy trình đăng nhập chuẩn:
+1. **Yêu cầu:** Frontend gửi Tên đăng nhập và Mật khẩu lên Backend.
+2. **Cấp phép:** Backend kiểm tra khớp dữ liệu, sẽ tạo ra một chuỗi mã gọi là `Token` và trả về.
+3. **Lưu trữ:** Frontend cất `Token` này vào bộ nhớ trình duyệt (VD: `localStorage`).
+4. **Sử dụng:** Trong các lần gọi API tiếp theo để xin dữ liệu nhạy cảm, Frontend phải tự động đính kèm `Token` này vào Header để Backend nhận diện.

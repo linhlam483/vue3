@@ -1,0 +1,56 @@
+# 📖 Bí Kíp: Lý Thuyết Cốt Lõi Về API & Axios
+
+Đây là toàn bộ "luật chơi" giữa Frontend và Backend. Hãy nhớ kỹ để làm việc chuyên nghiệp.
+
+---
+
+## 1. Bản Chất Axios Là Gì?
+- **Khái niệm:** Là một công cụ (như một Hãng Vận Chuyển) giúp Frontend "gọi điện" sang Backend.
+- **Nhiệm vụ:** Mang dữ liệu từ Frontend đưa cho Backend, hoặc đợi Backend lọc dữ liệu rồi xách về cho Frontend hiển thị.
+- **Vì sao không dùng mặc định?** Axios xịn hơn vì nó tự động đóng gói dữ liệu (JSON) và có thể bắt lỗi rất dễ dàng.
+
+---
+
+## 2. Các Động Từ Chức Năng (HTTP Methods - CRUD)
+Mỗi lần gọi điện, bạn phải nói rõ mục đích của mình:
+*   `API.get(...)` : **Lấy về** (Xin danh sách, xem chi tiết).
+*   `API.post(...)` : **Tạo mới** (Gửi form đăng nhập, thêm hàng vào giỏ).
+*   `API.put(...)` : **Cập nhật** (Sửa tên, đổi giá tiền).
+*   `API.delete(...)` : **Xóa bỏ** (Tiêu diệt dữ liệu khỏi máy chủ).
+
+---
+
+## 3. Khái Niệm Chờ Đợi (`async / await`)
+Vì đi xa tốn thời gian, ta phải báo cho code đứng đợi để tránh bị lỗi "chưa có dữ liệu nhưng muốn hiển thị".
+- **`async`**: Dặn dò hàm này sẽ tốn thời gian.
+- **`await`**: Ra lệnh cho đoạn code đứng đợi ngay dòng này cho đến khi dữ liệu được mang về.
+
+---
+
+## 4. Trạm Kiểm Soát (Interceptors)
+- **Bản chất:** Giống như một ông **Bảo vệ cổng**.
+- **Tác dụng:** Thay vì bạn phải tự nhét "Thẻ Bài VIP" (Token) bằng tay vào hàng trăm lần gọi API, ông bảo vệ này sẽ tự động chặn mọi gói hàng lại, kẹp thẻ bài vào rồi mới cho đi qua. Giúp code siêu ngắn gọn.
+
+---
+
+## 5. Quy Chuẩn 4 Thành Phần Của Một API Call
+Bất cứ lệnh gọi API nào cũng được cấu tạo bởi 4 thứ:
+1.  **URL (Endpoint):** Địa chỉ rõ ràng (VD: `/products`).
+2.  **Method:** Cái động từ ở mục 2 (VD: `GET`).
+3.  **Headers:** Nhãn dán trên nắp hộp. Chứa loại định dạng (`JSON`) và Thẻ bài bảo mật (`Authorization: Bearer <token>`).
+4.  **Body / Payload:** Ruột của gói hàng. Chứa dữ liệu cần gửi đi (Chỉ xài cho `POST` và `PUT`).
+
+---
+
+## 6. Ý Nghĩa Các Mã Trạng Thái (HTTP Status Code)
+Khi Backend trả lời, nó kèm theo 1 con số báo tình trạng. Thuộc lòng các đầu số sau:
+*   **Đầu 2 (Thành công mĩ mãn):**
+    *   `200 OK`: Ổn thỏa, thành công.
+    *   `201 Created`: Thêm mới vào CSDL thành công.
+*   **Đầu 4 (Lỗi do Frontend gửi sai):**
+    *   `400 Bad Request`: Bạn gửi dữ liệu sai định dạng (thiếu trường, sai kiểu chữ/số).
+    *   `401 Unauthorized`: Chưa đăng nhập, chưa kẹp Token bảo mật.
+    *   `403 Forbidden`: Có Token nhưng không đủ quyền hạn để chọc vào chức năng đó.
+    *   `404 Not Found`: Đường link sai hoặc dữ liệu đã bị xóa mất.
+*   **Đầu 5 (Lỗi do sếp - Backend lỗi):**
+    *   `500 Internal Server Error`: Backend sập nguồn, dính bug. (Bạn chụp ảnh chửi team Backend chứ Front không có lỗi).
