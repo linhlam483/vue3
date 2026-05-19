@@ -1,3 +1,25 @@
+# HỆ THỐNG QUẢN LÝ PHIÊN BẢN GIT & LÀM VIỆC NHÓM
+
+## 1. Vòng Đời Của Git Trong Dự Án
+Git không chỉ lưu code lên mạng, nó theo dõi "từng cái phẩy" bạn gõ trong code. Nó lưu lại lịch sử hệt như việc bạn Save file Word thành nhiều bản (Draft_1, Draft_2_final...).
+
+- **Working Directory (Khu làm việc):** Nơi bạn gõ code.
+- **Staging Area (`git add .`):** Nơi gom các file đã sửa xong, bỏ vào thùng giấy chờ dán băng keo.
+- **Local Repository (`git commit -m "..."`):** Dán băng keo thùng hàng, dán nhãn lịch sử. Lúc này code đã được lưu an toàn trên máy tính của bạn (Dù cúp mạng vẫn lưu).
+- **Remote Repository (`git push`):** Khuân cái thùng hàng đó vứt lên máy chủ Github để cả thế giới hoặc đồng nghiệp thấy được.
+
+## 2. Nhánh (Branching) - Tinh hoa của Git
+Đi làm thực tế không ai code thẳng lên nhánh `main` (nhánh chính đang chạy thật trên mạng).
+- Lệnh tạo nhánh mới (để code một chức năng mới an toàn): `git checkout -b feature/tinh-nang-moi`
+- Cứ sửa code thoải mái trên nhánh này, nếu lỗi thì vứt bỏ, không ảnh hưởng đến web chính.
+- Khi hoàn hảo rồi, báo cho Sếp kiểm tra (Tạo Pull Request). Sếp OK thì mới hợp nhất (Merge) nhánh của bạn vào nhánh `main`.
+
+## 3. Các Lệnh Cứu Nét Khi Xảy Ra Sự Cố
+- **Kéo code mới nhất của team về:** `git pull origin main` (Rất hay bị đụng độ - Conflict nếu 2 người cùng sửa chung 1 dòng code, lúc đó phải ngồi xem lại và xóa bớt dòng thừa).
+- **Lỡ tay xóa nhầm code:** Nếu chưa gõ `commit`, có thể hủy bỏ mọi sự thay đổi, quay về trạng thái gốc bằng lệnh: `git checkout .` (Lệnh cực kỳ nguy hiểm, xóa sạch công sức gõ chưa lưu).
+- **Xem file nào đang bị sửa đổi:** `git status`
+- **Cảnh báo LF / CRLF:** Windows dùng CRLF, Mac/Linux dùng LF. Git sẽ tự động chuyển đổi qua lại. Đây là một cảnh báo an toàn, không phải lỗi.
+
 # Các Câu Lệnh Git Cơ Bản Hàng Ngày
 
 ## 1. Chuỗi Lệnh Đẩy Code (Dùng Thường Xuyên)

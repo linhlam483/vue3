@@ -1,13 +1,59 @@
-# Mô Hình Kiến Trúc Frontend - Backend
+# MÔ HÌNH HỆ THỐNG VÀ BẢO MẬT HIỆN ĐẠI
 
-## 1. Sự Tách Biệt
-- **Backend (Máy chủ & Cơ sở dữ liệu):** Lưu trữ dữ liệu gốc, xử lý tính toán nặng và kiểm tra bảo mật.
-- **Frontend (Vue 3 / React):** Chỉ chịu trách nhiệm hiển thị giao diện (UI) và nhận tương tác của người dùng.
-- **Giao tiếp:** Hai bên nói chuyện với nhau thông qua API. Nhờ sự tách biệt này, nếu giao diện Frontend bị lỗi sập, dữ liệu trên Backend vẫn an toàn tuyệt đối.
+## 1. Sự Tách Biệt Frontend - Backend (Headless Architecture)
+- **Backend (Server & Database):** Máy chủ xử lý nghiệp vụ phức tạp, tính toán bảo mật và lưu trữ cơ sở dữ liệu.
+- **Frontend (Vue/React):** Giao diện hiển thị trên thiết bị người dùng. Không được phép chứa mật khẩu hay kết nối thẳng vào Database.
+- **Lợi ích:** 
+  - Code giao diện sập sẽ không ảnh hưởng đến an toàn dữ liệu của máy chủ.
+  - Một Backend có thể cấp dữ liệu cho cùng lúc nhiều nền tảng: Web Admin, Web Khách, Mobile App iOS/Android.
 
-## 2. Cơ Chế Xác Thực & Phân Quyền (Token-based Auth)
-Quy trình đăng nhập chuẩn:
-1. **Yêu cầu:** Frontend gửi Tên đăng nhập và Mật khẩu lên Backend.
-2. **Cấp phép:** Backend kiểm tra khớp dữ liệu, sẽ tạo ra một chuỗi mã gọi là `Token` và trả về.
-3. **Lưu trữ:** Frontend cất `Token` này vào bộ nhớ trình duyệt (VD: `localStorage`).
-4. **Sử dụng:** Trong các lần gọi API tiếp theo để xin dữ liệu nhạy cảm, Frontend phải tự động đính kèm `Token` này vào Header để Backend nhận diện.
+## 2. Mô Hình Đa Hệ Thống ("Kiến Trúc Con Bướm")
+Dùng để giải quyết bài toán phân quyền phức tạp (VD: Web Sinh viên và Web Giáo viên):
+- **Thân bướm (Backend):** Điểm xử lý tập trung duy nhất, giữ "Sổ Nam Tào" để kiểm tra quyền hạn.
+- **Cánh trái (Frontend Sinh Viên):** Một dự án Vue 3 độc lập chạy ở tên miền `sinhvien.com`. Giao diện trẻ trung, chỉ gọi API lấy điểm.
+- **Cánh phải (Frontend Giáo Viên):** Một dự án Vue 3 độc lập khác chạy ở `admin.com`. Có các form nhập điểm, đuổi học. 
+- *Bảo vệ:* Dù Sinh viên lén đăng nhập vào Cánh phải, khi gọi API, Backend kiểm tra thẻ bài thấy sai quyền sẽ lập tức chặn lại. Không thể hack qua mặt giao diện.
+
+## 3. Bảo Mật Xác Thực (Cơ Chế Token)
+Ba cấp độ lưu trữ Thẻ bài (Token) từ bảo mật thấp đến cao nhất:
+1. **LocalStorage / SessionStorage (Dễ nhất):** Dễ cấu hình nhưng dễ bị tấn công XSS (Mã độc Javascript có thể trộm được Token).
+2. **HttpOnly Cookie (Tiêu chuẩn tập đoàn lớn):** Backend ra lệnh cất Token vào rương mật của trình duyệt. Javascript (Vue) không đọc được nên miễn nhiễm với XSS. Phù hợp cho Ngân hàng, Ví điện tử.
+3. **In-Memory + Refresh Token (Vô đối):** 
+   - *Access Token* (sống 15 phút): Lưu trên RAM (Biến Pinia). Tải lại trang là mất. Siêu an toàn.
+   - *Refresh Token* (sống 30 ngày): Lưu ở `HttpOnly Cookie`. Khi RAM mất thẻ tạm, tự động mang thẻ này đi đổi lấy thẻ tạm mới ở dưới ngầm mà người dùng không hề hay biết.
+
+
+
+# NGHỆ THUẬT TÁCH CODE (REFACTORING) & COMPOSABLES
+
+## 1. Nỗi Đau Của Giao Diện Nguyên Khối (Spaghetti Code)
+Nếu nhét cả HTML (Hiển thị) và Javascript (Logic) vào chung một file `.vue`:
+- File dài hàng ngàn dòng, đọc muốn "lòi mắt".
+- Rất dễ xóa nhầm code của nhau khi làm việc nhóm (Designer xóa nhầm code của Coder).
+- Không thể tái sử dụng. (Ví dụ: Trang A tính tiền giỏ hàng, trang B cũng muốn tính tiền thì phải copy paste lại y hệt đoạn code đó).
+
+## 2. Giải Pháp Vue 3: Composables (Custom Hooks)
+- **Bản chất:** Rút ruột toàn bộ phần Javascript (Logic) ra và cất vào thư mục `src/composables/`. File `.vue` lúc này chỉ còn là một cái Vỏ HTML trống rỗng.
+- **Cách dùng:** File `.vue` giống như một người Tổng chỉ huy. Khi cần, nó sẽ "nhập" (import) các file logic vào để xài. 
+- **Lợi ích:** Cực kỳ sạch sẽ. Code logic chỉ viết 1 lần nhưng có thể đem đi tái sử dụng ở 100 trang khác nhau.
+
+## 3. Tiêu Chí Phân Loại File Logic (Cực Kỳ Quan Trọng)
+Tuyệt đối KHÔNG chia file logic theo tên trang (VD: ❌ `useHomeView.js`). 
+Phải chia theo **Nghiệp Vụ/Tính Năng (Feature-based)**:
+- ✅ `useProducts.js` (Chỉ lo chuyện sản phẩm).
+- ✅ `useCart.js` (Chỉ lo chuyện giỏ hàng, tính tiền).
+- ✅ `useSearch.js` (Chỉ lo chuyện thanh tìm kiếm).
+Lúc này 1 trang `HomeView` có thể gọi cùng lúc cả 3 Trưởng phòng này vào phục vụ cho nó. (Giống hệt cách trò chơi xếp hình LEGO hoạt động).
+
+## 4. Ba Nơi Để Vứt Code Logic
+Khi có một đoạn code mới, bạn phải biết vứt nó vào đâu cho chuẩn:
+1. **Để thẳng trong file `.vue`:** Nếu đoạn code đó cực kỳ ngắn (đóng/mở 1 cái menu) và chắc chắn 100% không trang nào khác xài lại nó.
+2. **Thư mục `src/utils/`:** Dành cho các hàm tính toán Toán học thuần túy, không dính dáng gì đến các biến của Vue (VD: Hàm định dạng chữ, Hàm tính toán ngày tháng, Cấu hình API Axios).
+3. **Thư mục `src/composables/`:** Dành cho các logic phức tạp, có chứa các biến trạng thái (`ref`, `reactive`) và vòng đời (`onMounted`) của Vue.
+
+---
+*(Bổ sung nhỏ về API)*
+## 5. Phân Biệt Gửi Hàng (Payload) và Lọc Hàng (Params)
+- **POST / PUT / PATCH:** Bắt buộc gửi cục hàng qua đường **Payload (Body)**.
+- **GET / DELETE:** Cấm dùng Payload. Nếu muốn lọc dữ liệu (Tìm kiếm, Phân trang), phải gắn thông tin lên thanh địa chỉ bằng **Query Params**. 
+  - *Cú pháp Axios:* `API.get('/search', { params: { q: 'phone' } })` sẽ tự động biến thành URL `.../search?q=phone`.

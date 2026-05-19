@@ -1,56 +1,29 @@
-# 📖 Bí Kíp: Lý Thuyết Cốt Lõi Về API & Axios
+# TIÊU CHUẨN GIAO TIẾP RESTFUL API & AXIOS
 
-Đây là toàn bộ "luật chơi" giữa Frontend và Backend. Hãy nhớ kỹ để làm việc chuyên nghiệp.
+## 1. Tiêu Chuẩn RESTful API Là Gì?
+Đó là bộ quy chuẩn quốc tế để thiết kế đường dẫn (URL) cho Backend, giúp Lập trình viên Front-end nhìn vào là hiểu ngay mà không cần đọc tài liệu.
+- **Quy tắc Vàng:** Đường dẫn URL chỉ dùng **Danh Từ**, và lấy Hành động (HTTP Method) làm **Động Từ**.
+  - ❌ *Sai (Kiểu cũ lộn xộn):* `GET /lay-danh-sach-user`, `POST /xoa-user-so-5`
+  - ✅ *Chuẩn RESTful:* `GET /users` (Lấy danh sách), `DELETE /users/5` (Xóa user số 5).
 
----
+## 2. Sáu Phương Thức (HTTP Methods) Cốt Lõi
+1. **GET (Đọc):** Xin dữ liệu. (Cấm dùng Body/Payload, chỉ lọc qua Params).
+2. **POST (Tạo):** Gửi dữ liệu mới lên máy chủ. (Bắt buộc có Body).
+3. **PUT (Ghi đè):** Cập nhật dữ liệu (Bắt buộc gửi nguyên 1 cục dữ liệu đầy đủ để thay thế cục cũ).
+4. **PATCH (Vá lỗi):** Cập nhật dữ liệu (Chỉ gửi những trường nào muốn sửa, cái khác giữ nguyên).
+5. **DELETE (Xóa):** Tiêu diệt dữ liệu theo ID. (Cấm dùng Body).
+6. **OPTIONS:** Lệnh dò đường do trình duyệt tự gửi ngầm để kiểm tra bảo mật (CORS) trước khi gửi lệnh POST/PUT thật. (Bạn không cần tự code lệnh này).
 
-## 1. Bản Chất Axios Là Gì?
-- **Khái niệm:** Là một công cụ (như một Hãng Vận Chuyển) giúp Frontend "gọi điện" sang Backend.
-- **Nhiệm vụ:** Mang dữ liệu từ Frontend đưa cho Backend, hoặc đợi Backend lọc dữ liệu rồi xách về cho Frontend hiển thị.
-- **Vì sao không dùng mặc định?** Axios xịn hơn vì nó tự động đóng gói dữ liệu (JSON) và có thể bắt lỗi rất dễ dàng.
+## 3. Các Định Dạng Đóng Gói (Payload Formats)
+Khi gửi gói hàng (Body) qua lệnh POST/PUT/PATCH, bạn phải chọn "loại thùng carton" (Content-Type) phù hợp:
+1. **`application/json`:** Chuẩn mực toàn cầu hiện nay. Dữ liệu xếp dưới dạng Key-Value (`{"name": "iPhone", "price": 999}`).
+2. **`multipart/form-data`:** Định dạng bắt buộc khi muốn **Upload File** (Ảnh Avatar, Video, PDF). JSON không thể chứa file vật lý, nên đụng tới File là phải đổi sang định dạng này.
+3. **`application/x-www-form-urlencoded`:** Định dạng đồ cổ, dữ liệu gửi y hệt trên thanh địa chỉ (`name=iPhone&price=999`). Rất ít dùng ở web hiện đại.
 
----
-
-## 2. Các Động Từ Chức Năng (HTTP Methods - CRUD)
-Mỗi lần gọi điện, bạn phải nói rõ mục đích của mình:
-*   `API.get(...)` : **Lấy về** (Xin danh sách, xem chi tiết).
-*   `API.post(...)` : **Tạo mới** (Gửi form đăng nhập, thêm hàng vào giỏ).
-*   `API.put(...)` : **Cập nhật** (Sửa tên, đổi giá tiền).
-*   `API.delete(...)` : **Xóa bỏ** (Tiêu diệt dữ liệu khỏi máy chủ).
-
----
-
-## 3. Khái Niệm Chờ Đợi (`async / await`)
-Vì đi xa tốn thời gian, ta phải báo cho code đứng đợi để tránh bị lỗi "chưa có dữ liệu nhưng muốn hiển thị".
-- **`async`**: Dặn dò hàm này sẽ tốn thời gian.
-- **`await`**: Ra lệnh cho đoạn code đứng đợi ngay dòng này cho đến khi dữ liệu được mang về.
-
----
-
-## 4. Trạm Kiểm Soát (Interceptors)
-- **Bản chất:** Giống như một ông **Bảo vệ cổng**.
-- **Tác dụng:** Thay vì bạn phải tự nhét "Thẻ Bài VIP" (Token) bằng tay vào hàng trăm lần gọi API, ông bảo vệ này sẽ tự động chặn mọi gói hàng lại, kẹp thẻ bài vào rồi mới cho đi qua. Giúp code siêu ngắn gọn.
-
----
-
-## 5. Quy Chuẩn 4 Thành Phần Của Một API Call
-Bất cứ lệnh gọi API nào cũng được cấu tạo bởi 4 thứ:
-1.  **URL (Endpoint):** Địa chỉ rõ ràng (VD: `/products`).
-2.  **Method:** Cái động từ ở mục 2 (VD: `GET`).
-3.  **Headers:** Nhãn dán trên nắp hộp. Chứa loại định dạng (`JSON`) và Thẻ bài bảo mật (`Authorization: Bearer <token>`).
-4.  **Body / Payload:** Ruột của gói hàng. Chứa dữ liệu cần gửi đi (Chỉ xài cho `POST` và `PUT`).
-
----
-
-## 6. Ý Nghĩa Các Mã Trạng Thái (HTTP Status Code)
-Khi Backend trả lời, nó kèm theo 1 con số báo tình trạng. Thuộc lòng các đầu số sau:
-*   **Đầu 2 (Thành công mĩ mãn):**
-    *   `200 OK`: Ổn thỏa, thành công.
-    *   `201 Created`: Thêm mới vào CSDL thành công.
-*   **Đầu 4 (Lỗi do Frontend gửi sai):**
-    *   `400 Bad Request`: Bạn gửi dữ liệu sai định dạng (thiếu trường, sai kiểu chữ/số).
-    *   `401 Unauthorized`: Chưa đăng nhập, chưa kẹp Token bảo mật.
-    *   `403 Forbidden`: Có Token nhưng không đủ quyền hạn để chọc vào chức năng đó.
-    *   `404 Not Found`: Đường link sai hoặc dữ liệu đã bị xóa mất.
-*   **Đầu 5 (Lỗi do sếp - Backend lỗi):**
-    *   `500 Internal Server Error`: Backend sập nguồn, dính bug. (Bạn chụp ảnh chửi team Backend chứ Front không có lỗi).
+## 4. Bảng Tra Cứu Mã Trạng Thái (HTTP Status Code)
+- **200 OK / 201 Created:** Mọi thứ hoàn hảo. Lệnh thực thi thành công.
+- **400 Bad Request:** Lỗi do Frontend gửi Payload sai định dạng, thiếu dữ liệu bắt buộc (Sếp bắt điền tên mà bạn gửi chuỗi rỗng).
+- **401 Unauthorized:** Chặn ở cổng bảo vệ do bạn quên kẹp Thẻ Bài (Token) hoặc Token hết hạn.
+- **403 Forbidden:** Bạn có Token hợp lệ, đã vào được cổng nhưng bị cấm truy cập khu vực VIP (VD: Sinh viên muốn sửa điểm của Giảng viên).
+- **404 Not Found:** Link API không tồn tại hoặc dữ liệu ID đó đã bị xóa.
+- **500 Internal Server Error:** Lỗi logic code từ phía Backend (Sập nguồn máy chủ). Lỗi này 100% do Backend, Frontend vô tội!

@@ -1,14 +1,15 @@
-# Kiến Trúc Cơ Bản Của Dự Án Vue 3
+# KIẾN TRÚC VÀ CÁC THÀNH PHẦN CỐT LÕI TRONG VUE 3
 
-## 1. Cấu Trúc Thư Mục
-Một dự án Vue 3 hiện đại chia nhỏ thành các phần độc lập:
-- **`App.vue`:** Khung sườn gốc của toàn bộ ứng dụng.
-- **`router/index.js`:** Nơi cấu hình điều hướng (URL nào mở trang nào).
-- **`views/`:** Chứa các Trang chính của web (VD: `HomeView.vue`, `ProductDetailView.vue`).
-- **`components/`:** Chứa các mảnh ghép giao diện nhỏ, tái sử dụng được nhiều lần (VD: Nút bấm, Thẻ sản phẩm, Thanh điều hướng).
-- **`utils/`:** Chứa các hàm tiện ích dùng chung (VD: file cấu hình API, hàm tính toán).
+## 1. Triết Lý Chia Trị (Component-based Architecture)
+Vue 3 không xây dựng cả một trang web trong một file. Nó chia web thành các "Mảnh ghép" (Components).
+- **`App.vue` (Root Component):** Khung sườn bao bọc toàn bộ ứng dụng. Là nơi chứa các Layout cố định (VD: Sidebar, Topbar).
+- **`views/` (Sân Khấu / Trang):** Chứa các file cấp cao nhất đại diện cho một URL cụ thể (VD: `HomeView.vue`, `LoginView.vue`). Các file này có nhiệm vụ gọi API lấy dữ liệu và truyền dữ liệu đó xuống cho các components con.
+- **`components/` (Mảnh Ghép):** Các phần tử UI nhỏ, mang tính tái sử dụng cao (VD: `BlueCard.vue`, `BaseButton.vue`). Components chỉ nhận dữ liệu để hiển thị, hạn chế tối đa việc gọi API trực tiếp bên trong component để dễ tái sử dụng.
 
-## 2. Quản Lý Dữ Liệu (State Management)
-Code xử lý logic được phân cấp rõ ràng:
-- **Logic nội bộ:** Xử lý trực tiếp trong thẻ `<script setup>` của từng file `.vue`.
-- **Logic toàn cục (Pinia):** Dùng cho các dữ liệu xài chung ở nhiều trang (VD: Giỏ hàng, Thông tin User). Thay vì truyền tay qua lại giữa các trang, dữ liệu được cất ở kho Pinia để mọi trang đều truy cập được.
+## 2. Giao Tiếp Trong Vue 3 (Props & Emits)
+- **Props (Cha truyền cho Con):** View (Sân khấu) lấy dữ liệu từ Backend, sau đó truyền vào Component (Mảnh ghép) thông qua Props. Component con chỉ được phép ĐỌC dữ liệu này, không được phép SỬA.
+- **Emits (Con báo cáo Cha):** Khi người dùng click nút "Xóa" ở Component con, Component con sẽ phát ra một tiếng hét (Emit) để báo cho View cha biết: "Hãy xóa ID số 5 đi!". View cha nghe thấy sẽ chạy hàm xóa dữ liệu thực sự.
+
+## 3. Hệ Sinh Thái Vue
+- **Vue Router:** Quản lý điều hướng (Định tuyến). Chịu trách nhiệm chặn người dùng chưa đăng nhập, hoặc tải trang mới mà không cần refresh lại trình duyệt (Single Page Application).
+- **Vite:** Công cụ Build Tool thế hệ mới (thay thế Webpack). Dịch code Vue/SCSS/Tailwind sang HTML/JS thuần cực kỳ nhanh chóng. Tốc độ cập nhật giao diện (HMR) tính bằng mili-giây.

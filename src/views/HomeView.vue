@@ -1,8 +1,19 @@
 <template>
   <div class="p-8 bg-gray-50 min-h-screen">
     <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Cửa Hàng Điện Thoại</h1>
+    
+    <div class="flex gap-4 justify-center mb-8">
+        <button @click="taoDienThoaiMoi" class="bg-blue-500 text-white px-4 py-2 rounded">+ Tạo (POST)</button>
+        <button @click="capNhatGia" class="bg-yellow-500 text-white px-4 py-2 rounded">Giảm giá (PATCH)</button>
+        <button @click="xoaDienThoai" class="bg-red-500 text-white px-4 py-2 rounded">Xóa (DELETE)</button>
+        <button @click="dangNhapThu" class="bg-purple-500 text-white px-4 py-2 rounded">Đăng Nhập (Auth)</button>
+        <button @click="timKiemSanPham" class="bg-gray-800 text-white px-4 py-2 rounded">Tìm (GET Params)</button>
+
+    </div>
+
+
     <div class="text-center mb-8">
-        <button @click="taodienthoaimoi"
+        <button @click="taoDienThoaiMoi"
                 class="bg-white p-4 rounded-xl shadow-md border hover:shadow-lg transition">
           + Tạo sản phẩm mới
     </button>
@@ -24,67 +35,27 @@
         <h2 class="text-lg font-bold text-gray-800">{{ sanPham.title }}</h2>
         <p class="text-sm text-gray-500 mb-2">{{ sanPham.description?.substring(0, 50) }}...</p>
         <p class="text-xl font-bold text-red-500">{{ sanPham.price }}$</p>
-        <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600">
-          xem chi tiết
-        </button>
+          <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600">
+            <!-- Thay chữ bằng thẻ này -->
+            <router-link :to="{ name: 'ProductDetail', params: { id: sanPham.id } }" class="block w-full h-full">
+              Xem chi tiết
+            </router-link>
+          </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import API from '../utils/api';
+// Nhập cái kho logic mình vừa tạo vào
+import { useProducts } from '../composables/useProducts';
 
-// Tạo 2 biến để lưu trữ trạng thái và dữ liệu
-const danhSachSanPham = ref([]); // Lúc đầu là mảng rỗng
-const dangTai = ref(true);       // Trạng thái đang tải dữ liệu
-
-// Hàm gọi API
-const layDuLieuSanPham = async () => {
-  try {
-    // Axios chọc vào link API (Backend)
-    const response = await API.get('/products');
-    
-    // Lưu kết quả Backend trả về vào biến của Vue
-    danhSachSanPham.value = response.data.products;
-    
-    // Tắt trạng thái đang tải
-    dangTai.value = false;
-  } catch (error) {
-    console.error("Lỗi khi lấy dữ liệu:", error);
-    dangTai.value = false;
-  }
-};
-
-// onMounted nghĩa là: Ngay khi trang web vừa mở lên (render xong) thì chạy hàm lấy dữ liệu luôn
-onMounted(() => {
-  layDuLieuSanPham();
-});
-
-// Thêm hàm gửi dữ liệu lên Backend
-const taodienthoaimoi = async () => {
-  try {
-    alert("Đang gửi dữ liệu lên máy chủ...");
-
-    // Gọi API.post để GỬI một gói dữ liệu lên Backend
-    const response = await API.post('/products/add', {
-      title: 'iPhone 20 Pro Max',
-      price: 9999,
-      description: 'Điện thoại mới',
-      thumbnail: 'https://cdn.dummyjson.com/product-images/1/thumbnail.jpg'
-    });
-
-    // In kết quả Backend trả về ra màn hình để xem
-    console.log("Backend đã nhận và báo lại:", response.data);
-    alert("Tạo thành công!");
-    
-    danhSachSanPham.value.push(response.data);
-    alert("Đã thêm sản phẩm vào danh sách!");
-
-  } catch (error) {
-    console.error("Lỗi rồi:", error);
-  }
-};
-
+// Lôi thêm 3 hàm mới ra đây
+const { 
+  danhSachSanPham, dangTai, taoDienThoaiMoi,
+  capNhatGia, xoaDienThoai, dangNhapThu, timKiemSanPham
+} = useProducts();
 </script>
+
+
+
