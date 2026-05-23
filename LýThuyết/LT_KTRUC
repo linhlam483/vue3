@@ -57,3 +57,6 @@ Khi có một đoạn code mới, bạn phải biết vứt nó vào đâu cho c
 - **POST / PUT / PATCH:** Bắt buộc gửi cục hàng qua đường **Payload (Body)**.
 - **GET / DELETE:** Cấm dùng Payload. Nếu muốn lọc dữ liệu (Tìm kiếm, Phân trang), phải gắn thông tin lên thanh địa chỉ bằng **Query Params**. 
   - *Cú pháp Axios:* `API.get('/search', { params: { q: 'phone' } })` sẽ tự động biến thành URL `.../search?q=phone`.
+
+---
+//npm run dev
